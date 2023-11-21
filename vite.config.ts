@@ -2,6 +2,7 @@ import EnvironmentPlugin from 'vite-plugin-environment'
 import { defineConfig, ConfigEnv } from 'vite'
 import fs from 'fs'
 import path from 'path'
+import postcssNesting from 'postcss-nesting'
 import pluginRewriteAll from 'vite-plugin-rewrite-all'
 import { createVuePlugin as vue } from 'vite-plugin-vue2'
 
@@ -21,6 +22,8 @@ const generateAboutText = (aboutText1, aboutText2) => {
 }
 
 export default defineConfig(({ mode }) => {
+  console.log('Current build mode:', mode)
+
   return {
     define: {
       'import.meta.env.ABOUT_TEXT': generateAboutText(aboutText1, aboutText2)
@@ -28,25 +31,27 @@ export default defineConfig(({ mode }) => {
     envPrefix: 'VUE_APP_', // Need to remove this after fixing vaults. Use import.meta.env with VUE_APP.
     build: {
       sourcemap: true,
-      lib: {
+      lib: mode === 'lib' ? {
         entry: path.resolve(__dirname, 'src/lib-setup.js'),
         name: 'lib',
         formats: ['umd'],
         fileName: (format) => `lib.${format}.min.js`
-      },
+      } : undefined,
       terserOptions: {
         format: {
           semicolons: false
         }
       },
       rollupOptions: {
-        // external: (id) => {
-        //   if (mode === 'lib' && (/^@vue\/composition-api$/.test(id) || /^vue$/.test(id))) {
-        //     return true
-        //   }
-        //   return false
-        // },
+        external: (id) => {
+          if (mode === 'lib' && (/^@vue\/composition-api$/.test(id) || /^vue$/.test(id))) {
+            return true
+          }
+          return false
+        },
         output: {
+          // Default output directory for all assets
+          dir: path.resolve(__dirname, 'dist'),
           globals: {
             vue: 'Vue',
             '@vue/composition-api': 'VueCompositionAPI',
@@ -78,6 +83,7 @@ export default defineConfig(({ mode }) => {
       EnvironmentPlugin({
         BUILD: 'web' // Fix for Vuelidate, allows process.env with Vite.
       }),
+      postcssNesting,
       pluginRewriteAll()
     ],
     resolve: {

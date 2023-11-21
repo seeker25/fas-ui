@@ -17,7 +17,7 @@
     "lint:fix": "eslint . --ext ts,vue --fix src",
     "test:unit": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "build:lib": "vite build --mode lib"
+    "build:lib": "vite build --mode lib  && node move-lib-files.js"
   },
   "dependencies": {
     "@bcrs-shared-components/base-address": "^2.0.3",
