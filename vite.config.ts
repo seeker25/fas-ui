@@ -43,23 +43,16 @@ export default defineConfig(({ mode }) => {
         }
       },
       rollupOptions: {
-        external: (id) => {
-          if (mode === 'lib' && (/^@vue\/composition-api$/.test(id) || /^vue$/.test(id))) {
-            return true
-          }
-          return false
-        },
-        output: {
-          // Default output directory for all assets
-          dir: path.resolve(__dirname, 'dist'),
-          globals: {
-            vue: 'Vue',
-            '@vue/composition-api': 'VueCompositionAPI',
-            'vue-i18n-composable': 'VueI18nComposable'
-          }
-        }
-      },
-      minify: 'terser'
+        // external: (request) => {
+        //   // If library, use externals, otherwise the Vue/ composition-api instance in Auth-web will have issues.
+        //   if (mode === 'lib' && (/^@vue\/composition-api$/.test(request) || /^vue$/.test(request))) {
+        //     return true
+        //   }
+        //   return false
+        // },
+        external: ['vue', '@vue/composition-api'],
+        minify: mode === 'lib' ? false : 'terser'
+      }
     },
     plugins: [
       vue({
