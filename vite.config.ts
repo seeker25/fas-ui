@@ -3,7 +3,6 @@ import { defineConfig, ConfigEnv } from 'vite'
 import fs from 'fs'
 import path from 'path'
 import pluginRewriteAll from 'vite-plugin-rewrite-all'
-// import postcssNesting from 'postcss-nesting'
 import { createVuePlugin as vue } from 'vite-plugin-vue2'
 
 const packageJson = fs.readFileSync('./package.json') as unknown as string
@@ -41,12 +40,12 @@ export default defineConfig(({ mode }) => {
         }
       },
       rollupOptions: {
-        external: (id) => {
-          if (mode === 'lib' && (/^@vue\/composition-api$/.test(id) || /^vue$/.test(id))) {
-            return true
-          }
-          return false
-        },
+        // external: (id) => {
+        //   if (mode === 'lib' && (/^@vue\/composition-api$/.test(id) || /^vue$/.test(id))) {
+        //     return true
+        //   }
+        //   return false
+        // },
         output: {
           globals: {
             vue: 'Vue',
@@ -79,7 +78,6 @@ export default defineConfig(({ mode }) => {
       EnvironmentPlugin({
         BUILD: 'web' // Fix for Vuelidate, allows process.env with Vite.
       }),
-      // postcssNesting,
       pluginRewriteAll()
     ],
     resolve: {
