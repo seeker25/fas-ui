@@ -2,8 +2,10 @@
   "name": "fas-ui",
   "version": "1.2.0",
   "private": true,
+  "main": "./lib/lib.umd.min.js",
   "files": [
-    "dist/lib.umd.min.js",
+    "lib/lib.umd.min.js",
+    "lib/lib.css",
     "src/assets/scss/search.scss"
   ],
   "scripts": {
@@ -15,7 +17,7 @@
     "lint:fix": "eslint . --ext ts,vue --fix src",
     "test:unit": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "build:lib": "vite build --mode lib"
+    "build:lib": "vite build --mode lib  && node move-lib-files.js"
   },
   "dependencies": {
     "@bcrs-shared-components/base-address": "^2.0.3",
